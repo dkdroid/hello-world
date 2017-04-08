@@ -1,0 +1,21 @@
+node {
+    checkout scm 
+    /* .. snip .. */
+}
+
+node {
+    stage('Build') {
+        sh 'make' 
+        archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true 
+    }
+}
+
+node {
+    /* .. snip .. */
+    stage('Deploy') {
+        if (currentBuild.result == null || currentBuild.result == 'SUCCESS') { 
+            sh 'make publish'
+        }
+    }
+    /* .. snip .. */
+}
